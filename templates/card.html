@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=1000,height=720">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:1000px}body{--bg:#edf2f7;--card:#fff;--ink:#192d42;--muted:#65788a;--line:#dce5ec;--soft:#f4f7fa;--accent:#256b82;background:var(--bg);color:var(--ink);font-family:'Noto Sans CJK SC','Microsoft YaHei','PingFang SC',Arial,sans-serif;padding:28px}
+body.dark{--bg:#101c2b;--card:#192a3d;--ink:#edf4fc;--muted:#aec0d3;--line:#34485e;--soft:#20354b;--accent:#87c9df}
+.card{border:1px solid var(--line);border-radius:22px;background:var(--card);overflow:hidden}
+.topline{height:7px;background:var(--accent)}.critical .topline{background:#d44956}.high .topline{background:#da7630}.medium .topline{background:#c29632}
+.inner{padding:32px 38px 28px}.eyebrow{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:16px;letter-spacing:1.5px;font-weight:700}
+.brand{display:flex;gap:10px;align-items:center}.mark{height:12px;width:12px;border-radius:3px;background:var(--accent)}
+.identity{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px;gap:16px}.cve{font-size:36px;font-weight:800;letter-spacing:-1px;overflow-wrap:anywhere}.state{font-size:17px;font-weight:700;padding:7px 13px;border-radius:8px;background:var(--soft);white-space:nowrap}
+h1{font-size:29px;line-height:1.4;margin:0 0 23px;font-weight:700;overflow-wrap:anywhere}.scorebox{display:flex;gap:22px;border:1px solid var(--line);border-radius:14px;background:var(--soft);padding:18px 22px;margin-bottom:20px;align-items:center}
+.score{font-size:56px;font-weight:800;line-height:1;color:#d44956;min-width:90px}.high .score{color:#d87528}.medium .score{color:#b38719}.low .score{color:#2e8d77}.neutral .score{font-size:27px;color:var(--muted)}
+.severity{font-size:21px;font-weight:700;margin-bottom:5px}.scoremeta{font-size:17px;color:var(--muted);line-height:1.5}.side{margin-left:auto;text-align:right;font-size:17px;color:var(--muted);max-width:280px;overflow-wrap:anywhere;line-height:1.7}
+.dates{display:flex;gap:24px;flex-wrap:wrap;color:var(--muted);font-size:16px;margin:12px 0 22px}.products{font-size:19px;margin:12px 0 18px;color:var(--accent);overflow-wrap:anywhere}
+.section{border-top:1px solid var(--line);padding-top:18px;margin-top:20px}.label{font-size:17px;font-weight:700;color:var(--accent);margin-bottom:11px;overflow-wrap:anywhere}.body{font-size:22px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}.versions .body{font-size:20px;line-height:1.6}.reference .body{font-size:18px;color:var(--muted)}.note .body{font-size:19px;color:var(--muted)}
+.notice{font-size:17px;line-height:1.6;padding:13px 16px;background:var(--soft);border-radius:9px;margin-top:22px;color:var(--muted)}
+.footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:15px;color:var(--muted);line-height:1.7}.footerline{display:flex;justify-content:space-between;gap:12px}.link{color:var(--accent);font-size:17px;overflow-wrap:anywhere}.continued{font-size:23px;color:var(--muted);margin-top:16px}
+</style></head>
+<body class="{{ theme }}"><article class="card {{ tone }}"><div class="topline"></div><div class="inner">
+<div class="eyebrow"><span class="brand"><i class="mark"></i>CVE RECORD / 漏洞档案</span><span>{{ '%02d'|format(page) }} / {{ '%02d'|format(page_count) }}</span></div>
+<div class="identity"><div class="cve">{{ record.id }}</div><div class="state">{{ record.state_label }}</div></div>
+{% if page == 1 %}
+<h1>{{ record.title }}</h1>
+<div class="scorebox">
+{% if record.scores and record.state == 'PUBLISHED' %}{% set s = record.scores[0] %}
+<div class="score">{{ s.score }}</div><div><div class="severity">{{ s.severity }}</div><div class="scoremeta">CVSS {{ s.version }} · 来源 {{ s.source }}{% if record.scores|length > 1 %}<br>共 {{ record.scores|length }} 组评分，按来源顺序展示{% endif %}</div></div>
+{% else %}<div class="score">{{ '已撤销' if record.state == 'REJECTED' else '未评分' }}</div><div class="scoremeta">{{ '请以撤销原因及原文为准' if record.state == 'REJECTED' else '官方记录未提供 CVSS 分数' }}</div>{% endif %}
+<div class="side">发布机构<br><strong>{{ record.provider }}</strong></div></div>
+<div class="dates"><span>发布 {{ record.published[:10] }}</span><span>更新 {{ record.updated[:10] }}</span><span>日期按 UTC</span></div>
+{% if record.products %}<div class="products">涉及产品 · {{ record.products[:5]|join(' / ') }}{% if record.products|length > 5 %} 等 {{ record.products|length }} 项{% endif %}</div>{% endif %}
+{% else %}<div class="continued">记录详情 · 第 {{ page }} 页</div>{% endif %}
+{% for block in blocks %}<section class="section {{ block.kind }}"><div class="label">{{ block.label }}</div><div class="body">{{ block.body }}</div></section>{% endfor %}
+{% if omitted %}<div class="notice">长记录预览：共 {{ total_pages }} 页，仅发送前 {{ page_count }} 页。部分描述、版本或参考信息可能未展示，请通过原文查看完整记录。</div>{% elif page_count > 1 %}<div class="notice">本记录共 {{ page_count }} 页。版本范围与补充信息请结合后续页面阅读。</div>{% endif %}
+<footer class="footer"><div class="footerline"><span>来源 {{ source }}{% if cached %} · 缓存{% endif %}</span><span>{{ fetched }}</span></div><div class="link">{{ url }}</div><div>按官方 JSON 整理 · 非 AI 总结 · 评分不等于实际环境风险评估</div></footer>
+</div></article></body></html>

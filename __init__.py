@@ -1,0 +1,1 @@
+"""CVE Card for AstrBot."""

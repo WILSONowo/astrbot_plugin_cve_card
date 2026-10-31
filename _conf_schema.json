@@ -1,0 +1,147 @@
+{
+  "auto_detect": {
+    "description": "自动识别消息中的 CVE 编号和链接",
+    "type": "bool",
+    "default": true
+  },
+  "auto_groups": {
+    "description": "自动识别群白名单",
+    "type": "list",
+    "default": [],
+    "hint": "填写群号字符串；空列表表示所有群。只影响自动识别，不影响 /cve 命令。"
+  },
+  "disabled_groups": {
+    "description": "关闭自动识别的群",
+    "type": "list",
+    "default": [],
+    "hint": "优先于白名单；/cve 命令仍可使用。"
+  },
+  "auto_private": {
+    "description": "允许私聊自动识别",
+    "type": "bool",
+    "default": true
+  },
+  "max_ids": {
+    "description": "每条消息最多解析的编号数",
+    "type": "int",
+    "default": 3,
+    "hint": "1–5，同一条消息会先去重。"
+  },
+  "cooldown_seconds": {
+    "description": "同一会话自动识别冷却（秒）",
+    "type": "int",
+    "default": 15,
+    "hint": "0–3600，显式命令不受此冷却限制，但同一会话不能并发查询。"
+  },
+  "dedupe_seconds": {
+    "description": "同会话相同编号自动识别去重时间（秒）",
+    "type": "int",
+    "default": 120,
+    "hint": "0–86400。"
+  },
+  "request_timeout": {
+    "description": "每个数据源请求超时（秒）",
+    "type": "int",
+    "default": 12
+  },
+  "render_timeout": {
+    "description": "单页渲染超时（秒）",
+    "type": "int",
+    "default": 40
+  },
+  "proxy": {
+    "description": "CVE 数据请求代理",
+    "type": "string",
+    "default": "",
+    "hint": "http:// 或 https://；留空默认直连，不支持 SOCKS。只控制 CVE 数据请求，T2I 使用 AstrBot 自身配置。"
+  },
+  "trust_env": {
+    "description": "读取环境变量中的 HTTP(S) 代理",
+    "type": "bool",
+    "default": false,
+    "hint": "显式 proxy 优先；关闭时不继承系统环境代理。"
+  },
+  "github_fallback": {
+    "description": "官方 API 不可用时尝试官方 GitHub 数据",
+    "type": "bool",
+    "default": true
+  },
+  "cache_ttl": {
+    "description": "成功记录内存缓存时长（秒）",
+    "type": "int",
+    "default": 3600,
+    "hint": "60–86400；未找到缓存 120 秒，其他失败缓存 15 秒；重启清空。"
+  },
+  "cache_size": {
+    "description": "最多缓存记录数",
+    "type": "int",
+    "default": 256,
+    "hint": "16–2048。"
+  },
+  "fetch_concurrency": {
+    "description": "全局数据请求并发数",
+    "type": "int",
+    "default": 2,
+    "hint": "1–5；渲染固定串行，最多同时处理 8 个会话。"
+  },
+  "push_enabled": {
+    "description": "启用 CISA KEV 新增漏洞定时推送",
+    "type": "bool",
+    "default": false,
+    "hint": "首次只建立基线；推送编号、状态、原文链接和漏洞长图。"
+  },
+  "target_sessions": {
+    "description": "推送目标会话",
+    "type": "list",
+    "default": [],
+    "hint": "填写 /sid 返回的 平台ID:GroupMessage:群号 形式；也兼容 UMO: 「…」提示包装。新增目标不补发历史。"
+  },
+  "push_interval_hours": {
+    "description": "推送检查间隔（小时）",
+    "type": "int",
+    "default": 6,
+    "hint": "1–48，修改后重载插件。"
+  },
+  "max_items_per_message": {
+    "description": "每条推送最多 CVE 数",
+    "type": "int",
+    "default": 5,
+    "hint": "1–15；超出分批，每会话每轮最多发送 5 批。"
+  },
+  "failure_notify_sessions": {
+    "description": "失败与恢复通知会话",
+    "type": "list",
+    "default": [],
+    "hint": "完整会话标识，留空不发通知。"
+  },
+  "admin_users": {
+    "description": "推送管理用户 ID",
+    "type": "list",
+    "default": [],
+    "hint": "AstrBot 管理员始终有权限；其他填写用户 ID。"
+  },
+  "kev_feed_url": {
+    "description": "CISA KEV 数据源",
+    "type": "string",
+    "default": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+    "hint": "默认官方地址，可指定自建镜像；复用 proxy 设置。"
+  },
+  "query_forward": {
+    "description": "多编号查询使用合并转发",
+    "type": "bool",
+    "default": true,
+    "hint": "QQ/OneBot 实际结果超过两条才合并转发；一至两条普通图文。"
+  },
+  "push_forward": {
+    "description": "推送使用合并转发",
+    "type": "bool",
+    "default": true,
+    "hint": "QQ/OneBot 每批超过两条合并；一至两条、关闭或其他平台时普通图文。"
+  },
+  "kev_cache_ttl": {
+    "description": "查询回退 KEV 缓存时长（秒）",
+    "type": "int",
+    "default": 3600,
+    "hint": "60–86400；支持 ETag，重载后清空。过期拉取失败冷却 30 秒，不使用过期数据。与推送基线独立。"
+  }
+}
