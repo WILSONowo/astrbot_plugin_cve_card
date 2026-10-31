@@ -6,7 +6,7 @@ AstrBot 插件：识别 CVE 编号和网址，生成漏洞长图，并订阅 CIS
 
 本项目的 KEV 增量预警设计参考了 [imdecimo（decimo）](https://github.com/imdecimo) 的 [astrbot_plugin_cve_warning](https://github.com/imdecimo/astrbot_plugin_cve_warning)。感谢原作者的工作。
 
-本仓库为独立插件实现，使用不同的插件名称与配置；并非原项目的官方版本。采用 [GPL-3.0](LICENSE) 许可。
+采用 [GPL-3.0](LICENSE) 许可。
 
 ## 安装
 
@@ -24,7 +24,7 @@ https://github.com/WILSONowo/astrbot_plugin_cve_card
 - /cve推送状态：查看推送状态。
 - /cve推送刷新：立即检查新增并尝试补发。
 
-QQ/OneBot 超过两条才合并转发；一至两条普通图文。文字和链接位于图片前。
+QQ/OneBot 超过两条合并转发。
 
 ## 定时推送
 
@@ -38,7 +38,7 @@ KEV 是已知被利用漏洞目录，并不涵盖全部新发布 CVE。本插件
 
 优先读取 CVE Services 官方 JSON，支持官方 GitHub 数据备用源。完整长图包括 CNA/ADP、描述、CVSS、受影响版本和参考链接等。
 
-官方状态明确时按其状态展示。404 或网络失败不能证明 RESERVED，此时若 KEV 有记录则以 UNKNOWN 状态渲染，并标明 CISA KEV 来源。明确 RESERVED 但无 KEV 内容时生成简洁状态卡。未实现官网网页状态提取。
+官方状态明确时按其状态展示。404 或网络失败时若 KEV 有记录则以 UNKNOWN 状态渲染，并标明 CISA KEV 来源。明确 RESERVED 但无 KEV 内容时生成简洁状态卡。未实现官网网页状态提取。
 
 缺失评分和日期显示 N/A。渲染失败保留简短文字与原文链接。
 
@@ -66,8 +66,8 @@ KEV 是已知被利用漏洞目录，并不涵盖全部新发布 CVE。本插件
 
 ## 开发与验证
 
-安装 requirements-dev.txt 后运行 python -m pytest -q。当前 103 项测试通过。
-事件与消息组件测试使用接口替身；测试通过不等于 QQ 客户端最终展示验收。发送成功判定以适配器是否报错为准。
+安装 requirements-dev.txt 后运行 python -m pytest -q。
+
 
 ## 数据来源
 
